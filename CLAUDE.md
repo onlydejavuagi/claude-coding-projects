@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Git & GitHub Workflow
 
-Every code change must be committed and pushed to GitHub:
+**Commit and push after every meaningful unit of work.** Do not batch multiple features into one commit, and do not leave work uncommitted at the end of a session. The goal is that GitHub always reflects the current working state of the project so work is never lost and any change can be reverted.
 
 ```bash
 git add <file>
@@ -12,9 +12,18 @@ git commit -m "descriptive message"
 git push
 ```
 
+When to commit:
+- After adding a new feature or fixing a bug
+- After any change that leaves the app in a working state
+- Before starting a risky or experimental change
+
+Commit message rules:
+- First line: short summary of *what* changed and *why* (not just "update" or "fix")
+- If multiple things changed, use a short body listing them
+
+Setup notes:
 - Remote: `https://github.com/onlydejavuagi/claude-coding-projects` (branch `master`)
-- `gh` CLI is at `/c/Program Files/GitHub CLI/gh` — add to PATH with `export PATH="$PATH:/c/Program Files/GitHub CLI"`
-- Write commit messages that describe *what changed and why*, not just "update"
+- `gh` CLI path: `/c/Program Files/GitHub CLI/gh` — activate with `export PATH="$PATH:/c/Program Files/GitHub CLI"`
 
 ## Project Structure
 
