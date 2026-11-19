@@ -33,7 +33,7 @@ All projects are standalone single-file HTML apps — no build step, no dependen
 |------|-------------|
 | `tictactoe.html` | Tic Tac Toe game — 2-player and vs CPU (minimax AI), score tracking |
 | `news-curator.html` | Daily news curator — RSS feeds, episode builder, script/bullet export, TTS |
-| `ClaudeVSCodeProject/daybook.html` | Daybook — journal (mood/energy/tags/gratitude, draft autosave, edit, search, streak + mood trend) and to-do; hash-router nav (`#/journal`, `#/todo`), localStorage persistence |
+| `ClaudeVSCodeProject/daybook.html` | Daybook — journal (mood/energy/tags/gratitude, draft autosave, edit, search, streak + mood trend) and to-do (priority/due/tags, status/due/priority/tag filters, sort, separate completed section); hash-router nav (`#/journal`, `#/todo`), localStorage persistence |
 
 ## news-curator.html Architecture
 

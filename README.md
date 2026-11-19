@@ -39,7 +39,7 @@ Pick the day's top stories and turn them into a short show script.
 A minimal journal and to-do app with top-bar navigation between the two sections.
 
 - **Journal**: log entries with mood, energy, a "grateful for" line and tags. Drafts autosave, and entries can be edited, searched and filtered. It also shows your writing streak and a 14-day mood chart.
-- **To-Do**: add, edit, check off and delete tasks, with a progress bar and Undo.
+- **To-Do**: tasks with a priority, due date and tags. Filter by status, due date, priority or tag, search, and sort. Overdue and due-today counts double as quick filters, and completed tasks get their own collapsible section with a distinct look.
 - Everything is saved in your browser (`localStorage`).
 
 ## Project conventions

@@ -290,30 +290,126 @@
     .entry-tags .tag:hover { background: #a8dadc33; }
 
     /* ---------- To-Do ---------- */
-    .add-row { display: flex; gap: 10px; padding: 12px; }
-    .progress { display: flex; flex-direction: column; gap: 8px; }
-    .progress-top { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--muted); }
-    .progress-track { height: 6px; border-radius: 999px; background: var(--bg); overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--mood-5)); border-radius: 999px; transition: width 0.4s ease; }
-    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .filters { display: flex; gap: 6px; }
-    .todos { display: flex; flex-direction: column; gap: 8px; }
+    .todo-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    button.stat {
+      text-align: left; font-weight: 400; color: var(--text);
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    button.stat:hover { filter: none; border-color: #ffffff30; }
+    button.stat.active { border-color: var(--teal); box-shadow: 0 0 0 3px #a8dadc22; }
+    .stat.warn .stat-value { color: #ff7b93; }
+    .stat.soon .stat-value { color: var(--mood-3); }
+    .stat.good .stat-value { color: var(--mood-5); }
 
-    .todo { display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 14px; animation: fadeUp 0.25s ease both; }
-    .todo label { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; cursor: pointer; }
-    .todo input[type='checkbox'] {
-      appearance: none; flex-shrink: 0;
-      width: 20px; height: 20px; padding: 0; border-radius: 6px;
-      border: 2px solid #ffffff40; background: transparent; cursor: pointer;
+    .add-task { display: flex; flex-direction: column; gap: 12px; padding: 14px; box-shadow: var(--shadow); }
+    .add-main { display: flex; gap: 10px; }
+    .add-main button { white-space: nowrap; }
+    .task-opts { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+    .opt { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); flex-wrap: wrap; }
+    .opt-label { margin-right: 2px; }
+    .prio-picker { display: flex; gap: 4px; }
+    .prio-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg); border: 1px solid var(--line); color: var(--muted);
+      padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 500;
+    }
+    .prio-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--p); }
+    .prio-btn.selected { color: var(--text); border-color: var(--p); background: color-mix(in srgb, var(--p) 16%, var(--bg)); }
+    .task-opts .chip { padding: 3px 10px; font-size: 0.78rem; }
+    .task-opts .tag-input { flex: 1; min-width: 180px; padding: 3px 8px; }
+    .task-opts .tag-input input { padding: 3px; min-width: 80px; font-size: 0.85rem; }
+
+    .todo-filters { display: flex; flex-direction: column; gap: 10px; }
+    .filter-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .filter-top .search { flex: 1; min-width: 200px; }
+    select {
+      background: var(--bg); color: var(--text); color-scheme: dark;
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 9px 10px; font: inherit; font-size: 0.85rem; cursor: pointer;
+    }
+    select:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px #a8dadc22; }
+    .seg { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
+    .seg button { background: transparent; color: var(--muted); padding: 5px 14px; font-size: 0.85rem; border-radius: 7px; font-weight: 500; }
+    .seg button.active { background: var(--card); color: var(--text); }
+    .n { font-size: 0.75rem; opacity: 0.7; margin-left: 5px; font-variant-numeric: tabular-nums; }
+    .group-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-right: 2px; }
+    .divider { width: 1px; height: 18px; background: var(--line); margin: 0 6px; }
+    .chip.prio.active { background: color-mix(in srgb, var(--p) 22%, transparent); }
+    .chip.prio::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--p); margin-right: 6px; vertical-align: 1px; }
+
+    .progress { display: flex; flex-direction: column; gap: 8px; }
+    .progress-top { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--muted); }
+    .progress-track { height: 6px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--mood-5)); border-radius: 999px; transition: width 0.4s ease; }
+
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start;
+      padding: 12px 10px 12px 16px; position: relative; overflow: hidden;
+      animation: fadeUp 0.25s ease both;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .task::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--p, transparent); }
+    .task:hover { border-color: #ffffff26; }
+    .task-check {
+      appearance: none; flex-shrink: 0; margin-top: 1px;
+      width: 22px; height: 22px; padding: 0; border-radius: 50%;
+      border: 2px solid color-mix(in srgb, var(--p, #ffffff) 55%, transparent); background: transparent; cursor: pointer;
       display: grid; place-items: center; transition: background 0.15s, border-color 0.15s;
     }
-    .todo input[type='checkbox']::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 700; transform: scale(0); transition: transform 0.15s; }
-    .todo input[type='checkbox']:checked { background: var(--accent); border-color: var(--accent); }
-    .todo input[type='checkbox']:checked::after { transform: scale(1); }
-    .todo-text { overflow-wrap: anywhere; transition: color 0.2s; }
-    .todo.done .todo-text { color: var(--muted); text-decoration: line-through; }
-    .todo .edit-input { padding: 4px 8px; }
-    .todo .hint { font-size: 0.75rem; color: var(--muted); }
+    .task-check:hover { background: color-mix(in srgb, var(--p, #ffffff) 14%, transparent); }
+    .task-check:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; box-shadow: none; }
+    .task-check::after { content: '✓'; color: var(--bg); font-size: 13px; font-weight: 800; transform: scale(0); transition: transform 0.15s; }
+    .task-check:checked { background: var(--mood-5); border-color: var(--mood-5); }
+    .task-check:checked::after { transform: scale(1); }
+    .task-check:hover:not(:checked)::after { transform: scale(0.8); color: color-mix(in srgb, var(--p, #ffffff) 60%, transparent); }
+
+    .task-body { min-width: 0; }
+    .task-text { overflow-wrap: anywhere; line-height: 1.45; }
+    .task-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; align-items: center; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.74rem; padding: 1px 9px; border-radius: 999px; font-weight: 500;
+      background: #ffffff0d; color: var(--muted);
+    }
+    .badge.overdue { background: #e9456024; color: #ff7b93; }
+    .badge.today { background: #e9c46a1f; color: var(--mood-3); }
+    .badge.prio { color: var(--p); background: color-mix(in srgb, var(--p) 14%, transparent); }
+    .task-meta .tag { cursor: pointer; font-size: 0.74rem; padding: 1px 9px; }
+    .task-meta .tag:hover { background: #a8dadc33; }
+    .task-actions { display: flex; gap: 2px; opacity: 0.45; transition: opacity 0.15s; }
+    .task:hover .task-actions, .task:focus-within .task-actions { opacity: 1; }
+
+    /* Completed tasks: flat, dashed, dimmed */
+    .done-section { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .done-head { display: flex; justify-content: space-between; align-items: center; }
+    .done-toggle {
+      background: none; color: var(--muted); padding: 4px 2px;
+      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+    }
+    .done-toggle:hover { color: var(--text); filter: none; }
+    .caret { display: inline-block; margin-right: 6px; transition: transform 0.2s; }
+    .done-section.collapsed .caret { transform: rotate(-90deg); }
+    .done-section.collapsed .task-list { display: none; }
+
+    .task.done {
+      background: transparent;
+      border: 1px dashed #ffffff1a;
+      padding-top: 9px; padding-bottom: 9px;
+    }
+    .task.done::before { display: none; }
+    .task.done .task-text { color: var(--muted); text-decoration: line-through; text-decoration-color: #ffffff4d; }
+    .task.done .task-meta { opacity: 0.65; margin-top: 4px; }
+    .task.done:hover { border-color: #ffffff30; background: #ffffff05; }
+    .done-when { font-size: 0.74rem; color: var(--mood-5); opacity: 0.85; }
+
+    /* Inline editor */
+    .task.editing { grid-template-columns: 1fr; border-color: #a8dadc55; background: var(--surface); }
+    .task.editing::before { display: none; }
+    .task-editor { display: flex; flex-direction: column; gap: 10px; }
+    .editor-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .editor-actions button { padding: 6px 14px; font-size: 0.85rem; }
 
     /* ---------- Toast ---------- */
     .toast {
@@ -341,6 +437,13 @@
       .entry { grid-template-columns: 1fr; gap: 10px; }
       .entry-mood { width: 36px; height: 36px; font-size: 1.15rem; }
       .entry-actions { opacity: 1; }
+      .todo-stats { grid-template-columns: repeat(2, 1fr); }
+      .filter-top .search { order: -1; min-width: 100%; }
+      .seg { flex: 1; }
+      .seg button { flex: 1; padding: 5px 8px; }
+      .divider { display: none; }
+      .add-main button { padding: 9px 14px; }
+      .task-actions { opacity: 1; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -952,127 +1055,480 @@
     // To-Do
     // =====================================================================
     const TODO_KEY = 'daybook.todos';
+    const TODO_PREFS_KEY = 'daybook.todoPrefs';
+
+    const PRIORITIES = [
+      { v: 3, label: 'High',   color: 'var(--mood-1)' },
+      { v: 2, label: 'Medium', color: 'var(--mood-2)' },
+      { v: 1, label: 'Low',    color: 'var(--teal)' },
+    ];
+    const prioOf = (v) => PRIORITIES.find((p) => p.v === v);
+
+    // Upgrade tasks saved by older versions ({id, text, done} only)
+    const normTodo = (t) => ({
+      id: t.id ?? uid(),
+      text: t.text ?? '',
+      done: !!t.done,
+      priority: t.priority ?? 0,
+      due: t.due ?? null,
+      tags: Array.isArray(t.tags) ? t.tags : [],
+      createdAt: t.createdAt ?? Date.now(),
+      completedAt: t.completedAt ?? (t.done ? Date.now() : null),
+    });
+
+    function daysFromToday(key) {
+      const [y, m, d] = key.split('-').map(Number);
+      const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+      return Math.round((new Date(y, m - 1, d) - t0) / 864e5);
+    }
+
+    function dueInfo(due, done) {
+      if (!due) return null;
+      const diff = daysFromToday(due);
+      const [y, m, d] = due.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const sameYear = dt.getFullYear() === new Date().getFullYear();
+      const short = dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) });
+      let label, cls = '';
+      if (diff < 0) {
+        label = diff === -1 ? 'Yesterday' : short;
+        if (!done) { label = `Overdue · ${label}`; cls = 'overdue'; }
+      } else if (diff === 0) { label = 'Today'; if (!done) cls = 'today'; }
+      else if (diff === 1) label = 'Tomorrow';
+      else if (diff < 7) label = dt.toLocaleDateString(undefined, { weekday: 'long' });
+      else label = short;
+      return { diff, label, cls };
+    }
+
+    function ago(ts) {
+      const s = (Date.now() - ts) / 1000;
+      if (s < 60) return 'just now';
+      if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+      if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+      if (s < 86400 * 7) return `${Math.floor(s / 86400)}d ago`;
+      return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    // Priority / due date / tags controls, shared by the add form and the inline editor
+    function taskOptions(init = {}) {
+      const state = { priority: init.priority || 0, due: init.due || '', tags: [...(init.tags || [])] };
+      const el = document.createElement('div');
+      el.className = 'task-opts';
+      el.innerHTML = `
+        <div class="opt">
+          <span class="opt-label">Priority</span>
+          <div class="prio-picker" role="radiogroup" aria-label="Priority">
+            ${PRIORITIES.map((p) => `
+              <button type="button" class="prio-btn" data-p="${p.v}" style="--p:${p.color}" role="radio" aria-checked="false">
+                <i class="dot"></i>${p.label}
+              </button>`).join('')}
+          </div>
+        </div>
+        <div class="opt">
+          <span class="opt-label">Due</span>
+          <input type="date" class="due-input" aria-label="Due date" />
+          <button type="button" class="chip" data-q="0">Today</button>
+          <button type="button" class="chip" data-q="1">Tomorrow</button>
+        </div>
+        <div class="tag-input">
+          <span class="tag-list"></span>
+          <input class="tag-entry" placeholder="Add tag…" maxlength="30" aria-label="Add tag" autocomplete="off" />
+        </div>
+      `;
+      const dueInput = el.querySelector('.due-input');
+      const tagEntry = el.querySelector('.tag-entry');
+      const quickKey = (q) => { const d = new Date(); d.setDate(d.getDate() + q); return dayKey(d); };
+
+      function sync() {
+        el.querySelectorAll('.prio-btn').forEach((b) => {
+          const on = Number(b.dataset.p) === state.priority;
+          b.classList.toggle('selected', on);
+          b.setAttribute('aria-checked', on);
+        });
+        dueInput.value = state.due;
+        el.querySelectorAll('[data-q]').forEach((b) => b.classList.toggle('active', state.due === quickKey(Number(b.dataset.q))));
+        el.querySelector('.tag-list').replaceChildren(...state.tags.map((t) => {
+          const s = document.createElement('span');
+          s.className = 'tag';
+          s.innerHTML = `#${esc(t)}<button type="button" aria-label="Remove tag ${esc(t)}">✕</button>`;
+          s.querySelector('button').onclick = () => { state.tags = state.tags.filter((x) => x !== t); sync(); };
+          return s;
+        }));
+      }
+
+      function commitTag() {
+        const t = tagEntry.value.trim().replace(/^#/, '').replace(/\s+/g, '-').toLowerCase();
+        tagEntry.value = '';
+        if (t && !state.tags.includes(t)) state.tags.push(t);
+        sync();
+      }
+
+      el.addEventListener('click', (e) => {
+        const pb = e.target.closest('.prio-btn');
+        if (pb) { const v = Number(pb.dataset.p); state.priority = state.priority === v ? 0 : v; sync(); return; }
+        const qb = e.target.closest('[data-q]');
+        if (qb) { const k = quickKey(Number(qb.dataset.q)); state.due = state.due === k ? '' : k; sync(); }
+      });
+      dueInput.addEventListener('change', () => { state.due = dueInput.value; sync(); });
+      tagEntry.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ',') && tagEntry.value.trim()) { e.preventDefault(); e.stopPropagation(); commitTag(); }
+        else if (e.key === 'Backspace' && !tagEntry.value && state.tags.length) { state.tags.pop(); sync(); }
+      });
+      tagEntry.addEventListener('blur', () => { if (tagEntry.value.trim()) commitTag(); });
+
+      sync();
+      return {
+        el,
+        get() { if (tagEntry.value.trim()) commitTag(); return { priority: state.priority, due: state.due || null, tags: [...state.tags] }; },
+        reset() { state.priority = 0; state.due = ''; state.tags = []; tagEntry.value = ''; sync(); },
+      };
+    }
 
     function renderTodo(root) {
-      let todos = load(TODO_KEY, []);
-      let filter = 'all';
+      let todos = load(TODO_KEY, []).map(normTodo);
+      save(TODO_KEY, todos); // persist upgraded fields (e.g. completedAt) so they stay stable
+      const prefs = { status: 'all', sort: 'smart', showDone: true, ...load(TODO_PREFS_KEY, {}) };
+      const filters = { q: '', due: null, prio: null, tag: null };
+      let editingId = null;
 
       root.innerHTML = `
         <section class="view">
           <div class="page-head">
             <h1>To-Do</h1>
-            <p>Double-click a task to edit it.</p>
+            <p class="todo-summary"></p>
           </div>
-          <form class="card add-row">
-            <input name="text" placeholder="Add a task…" autocomplete="off" aria-label="New task" maxlength="200" />
-            <button type="submit">Add</button>
+
+          <div class="todo-stats"></div>
+
+          <form class="card add-task" novalidate>
+            <div class="add-main">
+              <input name="text" placeholder="What needs doing?" autocomplete="off" aria-label="New task" maxlength="200" />
+              <button type="submit">Add task</button>
+            </div>
           </form>
+
+          <div class="todo-filters">
+            <div class="filter-top">
+              <div class="seg status" role="tablist" aria-label="Show">
+                <button data-status="active" role="tab">Active<span class="n"></span></button>
+                <button data-status="completed" role="tab">Completed<span class="n"></span></button>
+                <button data-status="all" role="tab">All<span class="n"></span></button>
+              </div>
+              <div class="search"><input type="search" placeholder="Search tasks…" aria-label="Search tasks" /></div>
+              <select class="sort" aria-label="Sort tasks">
+                <option value="smart">Sort: Smart</option>
+                <option value="due">Sort: Due date</option>
+                <option value="priority">Sort: Priority</option>
+                <option value="newest">Sort: Newest</option>
+              </select>
+            </div>
+            <div class="filter-row">
+              <span class="group-label">Due</span>
+              <button class="chip" data-due="overdue">Overdue<span class="n"></span></button>
+              <button class="chip" data-due="today">Today<span class="n"></span></button>
+              <button class="chip" data-due="week">This week<span class="n"></span></button>
+              <button class="chip" data-due="none">No date</button>
+              <span class="divider"></span>
+              <span class="group-label">Priority</span>
+              ${PRIORITIES.map((p) => `<button class="chip prio" data-prio="${p.v}" style="--p:${p.color}">${p.label}</button>`).join('')}
+              <span class="active-tag"></span>
+              <span class="spacer"></span>
+              <button class="link clear-filters">Clear filters</button>
+            </div>
+          </div>
+
           <div class="progress">
             <div class="progress-top"><span class="progress-label"></span><span class="progress-pct"></span></div>
             <div class="progress-track"><div class="progress-fill"></div></div>
           </div>
-          <div class="toolbar">
-            <div class="filters">
-              <button data-f="all" class="chip active">All</button>
-              <button data-f="open" class="chip">Open</button>
-              <button data-f="done" class="chip">Done</button>
+
+          <ul class="task-list active-list"></ul>
+
+          <div class="done-section">
+            <div class="done-head">
+              <button class="done-toggle" aria-expanded="true"><span class="caret">▾</span>Completed<span class="n"></span></button>
+              <button class="link clear-done">Clear completed</button>
             </div>
-            <button class="link clear-done">Clear completed</button>
+            <ul class="task-list done-list"></ul>
           </div>
-          <ul class="todos"></ul>
         </section>
       `;
 
-      const form = root.querySelector('form');
-      const list = root.querySelector('.todos');
-      const clearBtn = root.querySelector('.clear-done');
+      const $ = (s) => root.querySelector(s);
+      const form = $('.add-task');
+      const addOpts = taskOptions();
+      form.append(addOpts.el);
+      const activeList = $('.active-list');
+      const doneList = $('.done-list');
+      const doneSection = $('.done-section');
 
       const persist = () => { save(TODO_KEY, todos); draw(); };
+      const savePrefs = () => save(TODO_PREFS_KEY, prefs);
 
-      function drawProgress() {
-        const done = todos.filter((t) => t.done).length;
-        const pct = todos.length ? Math.round((done / todos.length) * 100) : 0;
-        root.querySelector('.progress-label').textContent = todos.length
-          ? `${done} of ${todos.length} done` : 'No tasks yet';
-        root.querySelector('.progress-pct').textContent = todos.length ? `${pct}%` : '';
-        root.querySelector('.progress-fill').style.width = pct + '%';
-        clearBtn.style.visibility = done ? 'visible' : 'hidden';
+      // ---------------- Filtering & sorting ----------------
+      function dueBucket(t) {
+        if (!t.due) return 'none';
+        const d = daysFromToday(t.due);
+        return d < 0 ? 'overdue' : d === 0 ? 'today' : d < 7 ? 'week' : 'later';
+      }
+
+      function matches(t, skip) {
+        if (filters.q) {
+          const hay = `${t.text} ${t.tags.join(' ')}`.toLowerCase();
+          if (!hay.includes(filters.q)) return false;
+        }
+        if (filters.prio && t.priority !== filters.prio) return false;
+        if (filters.tag && !t.tags.includes(filters.tag)) return false;
+        if (filters.due && skip !== 'due') {
+          if (filters.due === 'overdue' && t.done) return false; // finished tasks are never overdue
+          const b = dueBucket(t);
+          if (filters.due === 'week' ? !['today', 'week'].includes(b) : b !== filters.due) return false;
+        }
+        return true;
+      }
+
+      const dueSortVal = (t) => (t.due ? daysFromToday(t.due) : Infinity);
+      const sorters = {
+        smart: (a, b) => {
+          const ua = dueSortVal(a) <= 0 ? 0 : 1, ub = dueSortVal(b) <= 0 ? 0 : 1; // overdue/today first
+          return ua - ub || b.priority - a.priority || dueSortVal(a) - dueSortVal(b) || b.createdAt - a.createdAt;
+        },
+        due: (a, b) => dueSortVal(a) - dueSortVal(b) || b.priority - a.priority || b.createdAt - a.createdAt,
+        priority: (a, b) => b.priority - a.priority || dueSortVal(a) - dueSortVal(b) || b.createdAt - a.createdAt,
+        newest: (a, b) => b.createdAt - a.createdAt,
+      };
+
+      // ---------------- Actions ----------------
+      function toggleDone(t) {
+        const prev = { done: t.done, completedAt: t.completedAt };
+        t.done = !t.done;
+        t.completedAt = t.done ? Date.now() : null;
+        persist();
+        if (t.done) toast('Task completed', () => { Object.assign(t, prev); persist(); });
+      }
+
+      function deleteTask(t) {
+        const idx = todos.indexOf(t);
+        if (idx < 0) return;
+        todos.splice(idx, 1);
+        persist();
+        toast('Task deleted', () => { todos.splice(idx, 0, t); persist(); });
       }
 
       function startEdit(li, t) {
-        const label = li.querySelector('label');
-        const input = document.createElement('input');
-        input.className = 'edit-input';
+        editingId = t.id;
+        li.className = 'card task editing';
+        li.style.removeProperty('--p');
+        const opts = taskOptions(t);
+        li.innerHTML = `
+          <div class="task-editor">
+            <input class="edit-text" maxlength="200" aria-label="Task text" />
+            <div class="editor-actions">
+              <button type="button" class="ghost" data-act="cancel">Cancel</button>
+              <button type="button" data-act="save">Save</button>
+            </div>
+          </div>`;
+        const editor = li.querySelector('.task-editor');
+        const input = li.querySelector('.edit-text');
         input.value = t.text;
-        input.maxLength = 200;
-        label.replaceWith(input);
+        editor.insertBefore(opts.el, editor.querySelector('.editor-actions'));
+
+        const finish = (commit) => {
+          editingId = null;
+          if (commit) {
+            const text = input.value.trim();
+            if (text) Object.assign(t, { text, ...opts.get() });
+            persist();
+          } else draw();
+        };
+        li.querySelector('[data-act="save"]').onclick = () => finish(true);
+        li.querySelector('[data-act="cancel"]').onclick = () => finish(false);
+        li.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') finish(false);
+          if (e.key === 'Enter' && e.target === input) finish(true);
+        });
         input.focus();
         input.select();
-        let finished = false;
-        const finish = (commit) => {
-          if (finished) return;
-          finished = true;
-          const v = input.value.trim();
-          if (commit && v) t.text = v;
-          persist();
-        };
-        input.onkeydown = (e) => {
-          if (e.key === 'Enter') finish(true);
-          if (e.key === 'Escape') finish(false);
-        };
-        input.onblur = () => finish(true);
+      }
+
+      // ---------------- Rendering ----------------
+      function taskCard(t) {
+        const li = document.createElement('li');
+        const p = prioOf(t.priority);
+        const due = dueInfo(t.due, t.done);
+        li.className = 'card task' + (t.done ? ' done' : '');
+        if (p && !t.done) li.style.setProperty('--p', p.color);
+
+        const meta = [
+          t.done ? `<span class="done-when">✓ Done ${ago(t.completedAt)}</span>` : '',
+          p && !t.done ? `<span class="badge prio" style="--p:${p.color}">${p.label}</span>` : '',
+          due ? `<span class="badge ${due.cls}">📅 ${esc(due.label)}</span>` : '',
+          ...t.tags.map((tag) => `<button class="tag" data-tag="${esc(tag)}">#${esc(tag)}</button>`),
+        ].filter(Boolean).join('');
+
+        li.innerHTML = `
+          <input type="checkbox" class="task-check" ${t.done ? 'checked' : ''}
+            aria-label="${t.done ? 'Mark as not done' : 'Mark as done'}" />
+          <div class="task-body">
+            <div class="task-text"></div>
+            ${meta ? `<div class="task-meta">${meta}</div>` : ''}
+          </div>
+          <div class="task-actions">
+            <button class="icon" data-act="edit" title="Edit task" aria-label="Edit task">✎</button>
+            <button class="icon danger" data-act="delete" title="Delete task" aria-label="Delete task">✕</button>
+          </div>
+        `;
+        li.querySelector('.task-text').textContent = t.text;
+        li.querySelector('.task-check').onchange = () => toggleDone(t);
+        li.querySelector('.task-text').ondblclick = () => startEdit(li, t);
+        li.addEventListener('click', (e) => {
+          const act = e.target.closest('[data-act]')?.dataset.act;
+          if (act === 'edit') startEdit(li, t);
+          else if (act === 'delete') deleteTask(t);
+          const tagBtn = e.target.closest('[data-tag]');
+          if (tagBtn) { filters.tag = tagBtn.dataset.tag; draw(); }
+        });
+        return li;
+      }
+
+      function emptyState(html) {
+        const li = document.createElement('li');
+        li.className = 'empty';
+        li.innerHTML = html;
+        return li;
+      }
+
+      function drawStats() {
+        const active = todos.filter((t) => !t.done);
+        const overdue = active.filter((t) => dueBucket(t) === 'overdue').length;
+        const today = active.filter((t) => dueBucket(t) === 'today').length;
+        const weekAgo = Date.now() - 7 * 864e5;
+        const doneWeek = todos.filter((t) => t.done && t.completedAt >= weekAgo).length;
+
+        const card = (key, label, value, cls, active) => `
+          <button class="stat ${cls} ${active ? 'active' : ''}" data-stat="${key}">
+            <div class="stat-label">${label}</div>
+            <div class="stat-value">${value}</div>
+          </button>`;
+        $('.todo-stats').innerHTML =
+          card('active', 'Active', active.length, '', prefs.status === 'active' && !filters.due) +
+          card('today', 'Due today', today, today ? 'soon' : '', filters.due === 'today') +
+          card('overdue', 'Overdue', overdue, overdue ? 'warn' : '', filters.due === 'overdue') +
+          card('done', 'Done this week', doneWeek, doneWeek ? 'good' : '', prefs.status === 'completed');
+
+        const parts = [];
+        if (overdue) parts.push(`${overdue} overdue`);
+        if (today) parts.push(`${today} due today`);
+        $('.todo-summary').textContent = !todos.length ? 'Plan your day, one task at a time.'
+          : !active.length ? 'Everything is done. Enjoy the quiet.'
+          : `${active.length} active task${active.length === 1 ? '' : 's'}${parts.length ? ' · ' + parts.join(' · ') : ''}`;
+
+        const done = todos.length - active.length;
+        const pct = todos.length ? Math.round((done / todos.length) * 100) : 0;
+        $('.progress').style.display = todos.length ? '' : 'none';
+        $('.progress-label').textContent = `${done} of ${todos.length} done`;
+        $('.progress-pct').textContent = `${pct}%`;
+        $('.progress-fill').style.width = pct + '%';
+      }
+
+      function drawFilters(activeShown, doneShown) {
+        root.querySelectorAll('[data-status]').forEach((b) => {
+          b.classList.toggle('active', b.dataset.status === prefs.status);
+          b.setAttribute('aria-selected', b.dataset.status === prefs.status);
+          const n = { active: activeShown.length, completed: doneShown.length, all: activeShown.length + doneShown.length }[b.dataset.status];
+          b.querySelector('.n').textContent = n;
+        });
+        // Due-chip counts consider every other filter, among active tasks
+        const pool = todos.filter((t) => !t.done && matches(t, 'due'));
+        root.querySelectorAll('[data-due]').forEach((b) => {
+          b.classList.toggle('active', filters.due === b.dataset.due);
+          const n = b.querySelector('.n');
+          if (n) {
+            const c = pool.filter((t) => {
+              const k = dueBucket(t);
+              return b.dataset.due === 'week' ? k === 'today' || k === 'week' : k === b.dataset.due;
+            }).length;
+            n.textContent = c || '';
+          }
+        });
+        root.querySelectorAll('[data-prio]').forEach((b) => b.classList.toggle('active', filters.prio === Number(b.dataset.prio)));
+        $('.active-tag').innerHTML = filters.tag
+          ? `<span class="tag">#${esc(filters.tag)}<button type="button" aria-label="Clear tag filter">✕</button></span>` : '';
+        $('.active-tag button')?.addEventListener('click', () => { filters.tag = null; draw(); });
+        const anyFilter = filters.q || filters.due || filters.prio || filters.tag;
+        $('.clear-filters').style.display = anyFilter ? '' : 'none';
+        $('.sort').value = prefs.sort;
       }
 
       function draw() {
-        drawProgress();
-        const shown = todos.filter((t) =>
-          filter === 'all' ? true : filter === 'done' ? t.done : !t.done
-        );
+        if (editingId) return; // don't clobber an open editor
+        const activeShown = todos.filter((t) => !t.done && matches(t)).sort(sorters[prefs.sort]);
+        const doneShown = todos.filter((t) => t.done && matches(t)).sort((a, b) => b.completedAt - a.completedAt);
+        const anyFilter = filters.q || filters.due || filters.prio || filters.tag;
+        const totalDone = todos.filter((t) => t.done).length;
 
-        if (!shown.length) {
-          const msg = !todos.length
-            ? '<strong>Nothing to do</strong>Add your first task above.'
-            : filter === 'done' ? '<strong>Nothing finished yet</strong>Check off a task to see it here.'
-            : '<strong>All caught up</strong>Every task is done. Nice work.';
-          list.innerHTML = `<li class="empty">${msg}</li>`;
-          return;
+        drawStats();
+        drawFilters(activeShown, doneShown);
+
+        // Active list
+        const showActive = prefs.status !== 'completed';
+        activeList.style.display = showActive ? '' : 'none';
+        if (showActive) {
+          if (activeShown.length) activeList.replaceChildren(...activeShown.map(taskCard));
+          else activeList.replaceChildren(emptyState(
+            !todos.length ? '<strong>Nothing to do yet</strong>Add your first task above.'
+            : anyFilter ? '<strong>No matching tasks</strong>Try another filter, or clear them.'
+            : '<strong>All caught up 🎉</strong>Every task is done.'));
         }
 
-        list.replaceChildren(...shown.map((t) => {
-          const li = document.createElement('li');
-          li.className = 'card todo' + (t.done ? ' done' : '');
-          li.innerHTML = `
-            <label>
-              <input type="checkbox" ${t.done ? 'checked' : ''} aria-label="Mark done" />
-              <span class="todo-text"></span>
-            </label>
-            <button class="icon" data-act="edit" title="Edit task" aria-label="Edit task">✎</button>
-            <button class="icon danger" data-act="delete" title="Delete task" aria-label="Delete task">✕</button>
-          `;
-          li.querySelector('.todo-text').textContent = t.text;
-          li.querySelector('input').onchange = () => { t.done = !t.done; persist(); };
-          li.querySelector('.todo-text').ondblclick = (e) => { e.preventDefault(); startEdit(li, t); };
-          li.querySelector('[data-act="edit"]').onclick = () => startEdit(li, t);
-          li.querySelector('[data-act="delete"]').onclick = () => {
-            const idx = todos.indexOf(t);
-            todos.splice(idx, 1);
-            persist();
-            toast('Task deleted', () => { todos.splice(idx, 0, t); persist(); });
-          };
-          return li;
-        }));
+        // Completed section
+        const showDone = prefs.status !== 'active' && (doneShown.length || prefs.status === 'completed');
+        doneSection.style.display = showDone ? '' : 'none';
+        const collapsed = prefs.status === 'all' && !prefs.showDone;
+        doneSection.classList.toggle('collapsed', collapsed);
+        $('.done-toggle').setAttribute('aria-expanded', !collapsed);
+        $('.done-toggle').style.pointerEvents = prefs.status === 'completed' ? 'none' : '';
+        $('.done-toggle .caret').style.display = prefs.status === 'completed' ? 'none' : '';
+        $('.done-toggle .n').textContent = doneShown.length;
+        $('.clear-done').style.visibility = totalDone ? 'visible' : 'hidden';
+        if (showDone) {
+          doneList.replaceChildren(...(doneShown.length ? doneShown.map(taskCard)
+            : [emptyState(anyFilter ? '<strong>No matching tasks</strong>Try another filter.' : '<strong>Nothing completed yet</strong>Check off a task and it lands here.')]));
+        }
       }
 
-      form.onsubmit = (ev) => {
+      // ---------------- Events ----------------
+      form.addEventListener('submit', (ev) => {
         ev.preventDefault();
-        const text = form.elements.text.value.trim();
-        if (!text) return;
-        todos.unshift({ id: uid(), text, done: false, createdAt: Date.now() });
-        form.reset();
+        const input = form.elements.text;
+        const text = input.value.trim();
+        if (!text) { input.focus(); return; }
+        todos.unshift(normTodo({ id: uid(), text, done: false, createdAt: Date.now(), ...addOpts.get() }));
+        input.value = '';
+        addOpts.reset();
+        if (prefs.status === 'completed') { prefs.status = 'all'; savePrefs(); }
         persist();
-      };
+        input.focus();
+      });
 
-      clearBtn.onclick = () => {
+      root.querySelectorAll('[data-status]').forEach((b) => {
+        b.onclick = () => { prefs.status = b.dataset.status; savePrefs(); draw(); };
+      });
+      root.querySelectorAll('[data-due]').forEach((b) => {
+        b.onclick = () => { filters.due = filters.due === b.dataset.due ? null : b.dataset.due; draw(); };
+      });
+      root.querySelectorAll('[data-prio]').forEach((b) => {
+        b.onclick = () => { const v = Number(b.dataset.prio); filters.prio = filters.prio === v ? null : v; draw(); };
+      });
+      $('.sort').onchange = (e) => { prefs.sort = e.target.value; savePrefs(); draw(); };
+      $('.search input').addEventListener('input', debounce((e) => { filters.q = e.target.value.trim().toLowerCase(); draw(); }, 150));
+      $('.clear-filters').onclick = () => {
+        Object.assign(filters, { q: '', due: null, prio: null, tag: null });
+        $('.search input').value = '';
+        draw();
+      };
+      $('.done-toggle').onclick = () => { prefs.showDone = !prefs.showDone; savePrefs(); draw(); };
+      $('.clear-done').onclick = () => {
         const before = [...todos];
         const n = todos.filter((t) => t.done).length;
         todos = todos.filter((t) => !t.done);
@@ -1080,12 +1536,15 @@
         toast(`Cleared ${n} completed task${n === 1 ? '' : 's'}`, () => { todos = before; persist(); });
       };
 
-      root.querySelectorAll('.chip').forEach((b) => {
-        b.onclick = () => {
-          filter = b.dataset.f;
-          root.querySelectorAll('.chip').forEach((c) => c.classList.toggle('active', c === b));
-          draw();
-        };
+      // Stat cards act as shortcuts
+      $('.todo-stats').addEventListener('click', (e) => {
+        const key = e.target.closest('[data-stat]')?.dataset.stat;
+        if (!key) return;
+        if (key === 'active') { prefs.status = 'active'; filters.due = null; }
+        else if (key === 'done') { prefs.status = prefs.status === 'completed' ? 'all' : 'completed'; filters.due = null; }
+        else { filters.due = filters.due === key ? null : key; if (filters.due) prefs.status = 'active'; }
+        savePrefs();
+        draw();
       });
 
       draw();
