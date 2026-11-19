@@ -34,9 +34,13 @@ Pick the day's top stories and turn them into a short show script.
 
 > **Note:** Feeds are fetched through the public [allorigins.win](https://allorigins.win) CORS proxy, so the app needs an internet connection. If a source fails to load, the proxy or that feed may be temporarily down; try **Refresh**.
 
-### Daybook: Journal & To-Do — [`ClaudeVSCodeProject/`](ClaudeVSCodeProject/)
+### Daybook: Journal & To-Do — [`ClaudeVSCodeProject/daybook.html`](ClaudeVSCodeProject/daybook.html)
 
-A minimal journal and to-do app with top-bar navigation between the two sections. Data is saved in your browser. This is the one app that uses a dev server (Vite), so run it with `npm install && npm run dev` inside that folder. See its [README](ClaudeVSCodeProject/README.md).
+A minimal journal and to-do app with top-bar navigation between the two sections.
+
+- **Journal**: dated entries with optional titles, shown newest first.
+- **To-Do**: add, check off and delete tasks, and filter by All, Open or Done.
+- Everything is saved in your browser (`localStorage`).
 
 ## Project conventions
 
