@@ -33,6 +33,7 @@ All projects are standalone single-file HTML apps — no build step, no dependen
 |------|-------------|
 | `tictactoe.html` | Tic Tac Toe game — 2-player and vs CPU (minimax AI), score tracking |
 | `news-curator.html` | Daily news curator — RSS feeds, episode builder, script/bullet export, TTS |
+| `ClaudeVSCodeProject/` | Daybook journal + to-do app — vanilla JS on Vite (exception to the no-build rule; run `npm install && npm run dev`) |
 
 ## news-curator.html Architecture
 
