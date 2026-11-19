@@ -9,6 +9,10 @@ npm install
 npm run dev      # opens at http://localhost:5173
 ```
 
+> **Windows PowerShell error "running scripts is disabled on this system"?** Either run
+> `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use `npm.cmd` in place of `npm`
+> (e.g. `npm.cmd run dev`).
+
 `npm run build` writes a static production build to `dist/`, and `npm run preview` serves that build.
 
 ## Features
